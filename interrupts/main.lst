@@ -1,0 +1,280 @@
+
+main.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000013a  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  0000013a  000001ce  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000001  00800060  00800060  000001ce  2**0
+                  ALLOC
+  3 .stab         00000774  00000000  00000000  000001d0  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  4 .stabstr      00000ca4  00000000  00000000  00000944  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .comment      00000011  00000000  00000000  000015e8  2**0
+                  CONTENTS, READONLY
+  6 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000015fc  2**2
+                  CONTENTS, READONLY
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	37 c0       	rjmp	.+110    	; 0x72 <__vector_1>
+   4:	58 c0       	rjmp	.+176    	; 0xb6 <__vector_2>
+   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	1a c0       	rjmp	.+52     	; 0x46 <__bad_interrupt>
+  12:	19 c0       	rjmp	.+50     	; 0x46 <__bad_interrupt>
+  14:	18 c0       	rjmp	.+48     	; 0x46 <__bad_interrupt>
+  16:	17 c0       	rjmp	.+46     	; 0x46 <__bad_interrupt>
+  18:	16 c0       	rjmp	.+44     	; 0x46 <__bad_interrupt>
+  1a:	15 c0       	rjmp	.+42     	; 0x46 <__bad_interrupt>
+  1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
+  1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
+  20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
+  22:	11 c0       	rjmp	.+34     	; 0x46 <__bad_interrupt>
+  24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_clear_bss>:
+  32:	20 e0       	ldi	r18, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	a1 36       	cpi	r26, 0x61	; 97
+  3e:	b2 07       	cpc	r27, r18
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	64 d0       	rcall	.+200    	; 0x10c <main>
+  44:	78 c0       	rjmp	.+240    	; 0x136 <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <delay_ms>:
+
+/*Global count variable*/
+BYTE count = 0;
+
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+  48:	9c 01       	movw	r18, r24
+  4a:	ad ec       	ldi	r26, 0xCD	; 205
+  4c:	bc ec       	ldi	r27, 0xCC	; 204
+  4e:	67 d0       	rcall	.+206    	; 0x11e <__umulhisi3>
+  50:	96 95       	lsr	r25
+  52:	87 95       	ror	r24
+  54:	96 95       	lsr	r25
+  56:	87 95       	ror	r24
+  58:	96 95       	lsr	r25
+  5a:	87 95       	ror	r24
+  5c:	00 97       	sbiw	r24, 0x00	; 0
+  5e:	41 f0       	breq	.+16     	; 0x70 <delay_ms+0x28>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  60:	e3 ec       	ldi	r30, 0xC3	; 195
+  62:	f9 e0       	ldi	r31, 0x09	; 9
+  64:	31 97       	sbiw	r30, 0x01	; 1
+  66:	f1 f7       	brne	.-4      	; 0x64 <delay_ms+0x1c>
+  68:	00 c0       	rjmp	.+0      	; 0x6a <delay_ms+0x22>
+  6a:	00 00       	nop
+  6c:	01 97       	sbiw	r24, 0x01	; 1
+  6e:	c1 f7       	brne	.-16     	; 0x60 <delay_ms+0x18>
+  70:	08 95       	ret
+
+00000072 <__vector_1>:
+        _delay_ms(10);
+}
+
+/*Interrupt handling from keyboard 0*/
+ISR(INT0_vect){
+  72:	1f 92       	push	r1
+  74:	0f 92       	push	r0
+  76:	0f b6       	in	r0, 0x3f	; 63
+  78:	0f 92       	push	r0
+  7a:	11 24       	eor	r1, r1
+  7c:	8f 93       	push	r24
+  7e:	9f 93       	push	r25
+  80:	ef 93       	push	r30
+  82:	ff 93       	push	r31
+  84:	8a e0       	ldi	r24, 0x0A	; 10
+  86:	90 e0       	ldi	r25, 0x00	; 0
+  88:	e3 ec       	ldi	r30, 0xC3	; 195
+  8a:	f9 e0       	ldi	r31, 0x09	; 9
+  8c:	31 97       	sbiw	r30, 0x01	; 1
+  8e:	f1 f7       	brne	.-4      	; 0x8c <__vector_1+0x1a>
+  90:	00 c0       	rjmp	.+0      	; 0x92 <__vector_1+0x20>
+  92:	00 00       	nop
+  94:	01 97       	sbiw	r24, 0x01	; 1
+
+/*Global count variable*/
+BYTE count = 0;
+
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+  96:	c1 f7       	brne	.-16     	; 0x88 <__vector_1+0x16>
+}
+
+/*Interrupt handling from keyboard 0*/
+ISR(INT0_vect){
+    delay_ms(100);
+    count++;
+  98:	80 91 60 00 	lds	r24, 0x0060
+  9c:	8f 5f       	subi	r24, 0xFF	; 255
+  9e:	80 93 60 00 	sts	0x0060, r24
+    PORTB = count;
+  a2:	88 bb       	out	0x18, r24	; 24
+}
+  a4:	ff 91       	pop	r31
+  a6:	ef 91       	pop	r30
+  a8:	9f 91       	pop	r25
+  aa:	8f 91       	pop	r24
+  ac:	0f 90       	pop	r0
+  ae:	0f be       	out	0x3f, r0	; 63
+  b0:	0f 90       	pop	r0
+  b2:	1f 90       	pop	r1
+  b4:	18 95       	reti
+
+000000b6 <__vector_2>:
+
+/*Interrupt handling from keyboard 0*/
+ISR(INT1_vect){
+  b6:	1f 92       	push	r1
+  b8:	0f 92       	push	r0
+  ba:	0f b6       	in	r0, 0x3f	; 63
+  bc:	0f 92       	push	r0
+  be:	11 24       	eor	r1, r1
+  c0:	8f 93       	push	r24
+  c2:	9f 93       	push	r25
+  c4:	ef 93       	push	r30
+  c6:	ff 93       	push	r31
+  c8:	8a e0       	ldi	r24, 0x0A	; 10
+  ca:	90 e0       	ldi	r25, 0x00	; 0
+  cc:	e3 ec       	ldi	r30, 0xC3	; 195
+  ce:	f9 e0       	ldi	r31, 0x09	; 9
+  d0:	31 97       	sbiw	r30, 0x01	; 1
+  d2:	f1 f7       	brne	.-4      	; 0xd0 <__vector_2+0x1a>
+  d4:	00 c0       	rjmp	.+0      	; 0xd6 <__vector_2+0x20>
+  d6:	00 00       	nop
+  d8:	01 97       	sbiw	r24, 0x01	; 1
+
+/*Global count variable*/
+BYTE count = 0;
+
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+  da:	c1 f7       	brne	.-16     	; 0xcc <__vector_2+0x16>
+}
+
+/*Interrupt handling from keyboard 0*/
+ISR(INT1_vect){
+    delay_ms(100);
+    count++;
+  dc:	80 91 60 00 	lds	r24, 0x0060
+  e0:	8f 5f       	subi	r24, 0xFF	; 255
+  e2:	80 93 60 00 	sts	0x0060, r24
+    PORTB = count;
+  e6:	88 bb       	out	0x18, r24	; 24
+}
+  e8:	ff 91       	pop	r31
+  ea:	ef 91       	pop	r30
+  ec:	9f 91       	pop	r25
+  ee:	8f 91       	pop	r24
+  f0:	0f 90       	pop	r0
+  f2:	0f be       	out	0x3f, r0	; 63
+  f4:	0f 90       	pop	r0
+  f6:	1f 90       	pop	r1
+  f8:	18 95       	reti
+
+000000fa <init>:
+
+void init(){
+    /*Set output pins*/
+    DDRB = 1 << PIN0 | 1 << PIN1 | 1 << PIN2 | 1 << PIN3;   // 1:out 0:in
+  fa:	8f e0       	ldi	r24, 0x0F	; 15
+  fc:	87 bb       	out	0x17, r24	; 23
+    MCUCR |= (1<<ISC11);
+  fe:	85 b7       	in	r24, 0x35	; 53
+ 100:	88 60       	ori	r24, 0x08	; 8
+ 102:	85 bf       	out	0x35, r24	; 53
+    GIMSK = (1<<INT0)|(1<<INT1);
+ 104:	80 ec       	ldi	r24, 0xC0	; 192
+ 106:	8b bf       	out	0x3b, r24	; 59
+
+    /*
+     * Allow Interrupts
+     */
+    sei();
+ 108:	78 94       	sei
+ 10a:	08 95       	ret
+
+0000010c <main>:
+    PORTB = count;
+}
+
+void init(){
+    /*Set output pins*/
+    DDRB = 1 << PIN0 | 1 << PIN1 | 1 << PIN2 | 1 << PIN3;   // 1:out 0:in
+ 10c:	8f e0       	ldi	r24, 0x0F	; 15
+ 10e:	87 bb       	out	0x17, r24	; 23
+    MCUCR |= (1<<ISC11);
+ 110:	85 b7       	in	r24, 0x35	; 53
+ 112:	88 60       	ori	r24, 0x08	; 8
+ 114:	85 bf       	out	0x35, r24	; 53
+    GIMSK = (1<<INT0)|(1<<INT1);
+ 116:	80 ec       	ldi	r24, 0xC0	; 192
+ 118:	8b bf       	out	0x3b, r24	; 59
+
+    /*
+     * Allow Interrupts
+     */
+    sei();
+ 11a:	78 94       	sei
+int main(){
+    
+    init();
+    while(1){
+        
+    }
+ 11c:	ff cf       	rjmp	.-2      	; 0x11c <main+0x10>
+
+0000011e <__umulhisi3>:
+ 11e:	a2 9f       	mul	r26, r18
+ 120:	b0 01       	movw	r22, r0
+ 122:	b3 9f       	mul	r27, r19
+ 124:	c0 01       	movw	r24, r0
+ 126:	a3 9f       	mul	r26, r19
+ 128:	01 d0       	rcall	.+2      	; 0x12c <__umulhisi3+0xe>
+ 12a:	b2 9f       	mul	r27, r18
+ 12c:	70 0d       	add	r23, r0
+ 12e:	81 1d       	adc	r24, r1
+ 130:	11 24       	eor	r1, r1
+ 132:	91 1d       	adc	r25, r1
+ 134:	08 95       	ret
+
+00000136 <_exit>:
+ 136:	f8 94       	cli
+
+00000138 <__stop_program>:
+ 138:	ff cf       	rjmp	.-2      	; 0x138 <__stop_program>

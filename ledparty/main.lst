@@ -1,0 +1,1070 @@
+
+main.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000003c4  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  000003c4  00000438  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .stab         0000117c  00000000  00000000  00000438  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      00000cd8  00000000  00000000  000015b4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .comment      00000011  00000000  00000000  0000228c  2**0
+                  CONTENTS, READONLY
+  5 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000022a0  2**2
+                  CONTENTS, READONLY
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	19 c0       	rjmp	.+50     	; 0x36 <__bad_interrupt>
+   4:	18 c0       	rjmp	.+48     	; 0x36 <__bad_interrupt>
+   6:	17 c0       	rjmp	.+46     	; 0x36 <__bad_interrupt>
+   8:	16 c0       	rjmp	.+44     	; 0x36 <__bad_interrupt>
+   a:	15 c0       	rjmp	.+42     	; 0x36 <__bad_interrupt>
+   c:	14 c0       	rjmp	.+40     	; 0x36 <__bad_interrupt>
+   e:	13 c0       	rjmp	.+38     	; 0x36 <__bad_interrupt>
+  10:	12 c0       	rjmp	.+36     	; 0x36 <__bad_interrupt>
+  12:	11 c0       	rjmp	.+34     	; 0x36 <__bad_interrupt>
+  14:	10 c0       	rjmp	.+32     	; 0x36 <__bad_interrupt>
+  16:	0f c0       	rjmp	.+30     	; 0x36 <__bad_interrupt>
+  18:	0e c0       	rjmp	.+28     	; 0x36 <__bad_interrupt>
+  1a:	0d c0       	rjmp	.+26     	; 0x36 <__bad_interrupt>
+  1c:	0c c0       	rjmp	.+24     	; 0x36 <__bad_interrupt>
+  1e:	0b c0       	rjmp	.+22     	; 0x36 <__bad_interrupt>
+  20:	0a c0       	rjmp	.+20     	; 0x36 <__bad_interrupt>
+  22:	09 c0       	rjmp	.+18     	; 0x36 <__bad_interrupt>
+  24:	08 c0       	rjmp	.+16     	; 0x36 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+  32:	a7 d1       	rcall	.+846    	; 0x382 <main>
+  34:	c5 c1       	rjmp	.+906    	; 0x3c0 <_exit>
+
+00000036 <__bad_interrupt>:
+  36:	e4 cf       	rjmp	.-56     	; 0x0 <__vectors>
+
+00000038 <delay_ms>:
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+  38:	9c 01       	movw	r18, r24
+  3a:	ad ec       	ldi	r26, 0xCD	; 205
+  3c:	bc ec       	ldi	r27, 0xCC	; 204
+  3e:	b4 d1       	rcall	.+872    	; 0x3a8 <__umulhisi3>
+  40:	96 95       	lsr	r25
+  42:	87 95       	ror	r24
+  44:	96 95       	lsr	r25
+  46:	87 95       	ror	r24
+  48:	96 95       	lsr	r25
+  4a:	87 95       	ror	r24
+  4c:	00 97       	sbiw	r24, 0x00	; 0
+  4e:	41 f0       	breq	.+16     	; 0x60 <__SREG__+0x21>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  50:	e3 ec       	ldi	r30, 0xC3	; 195
+  52:	f9 e0       	ldi	r31, 0x09	; 9
+  54:	31 97       	sbiw	r30, 0x01	; 1
+  56:	f1 f7       	brne	.-4      	; 0x54 <__SREG__+0x15>
+  58:	00 c0       	rjmp	.+0      	; 0x5a <__SREG__+0x1b>
+  5a:	00 00       	nop
+  5c:	01 97       	sbiw	r24, 0x01	; 1
+  5e:	c1 f7       	brne	.-16     	; 0x50 <__SREG__+0x11>
+  60:	08 95       	ret
+
+00000062 <l_to_r>:
+        _delay_ms(10);
+}
+/* Original code*/
+void l_to_r(){
+    PORTB = 1 << PIN0;
+  62:	81 e0       	ldi	r24, 0x01	; 1
+  64:	88 bb       	out	0x18, r24	; 24
+  66:	8a e0       	ldi	r24, 0x0A	; 10
+  68:	90 e0       	ldi	r25, 0x00	; 0
+  6a:	e3 ec       	ldi	r30, 0xC3	; 195
+  6c:	f9 e0       	ldi	r31, 0x09	; 9
+  6e:	31 97       	sbiw	r30, 0x01	; 1
+  70:	f1 f7       	brne	.-4      	; 0x6e <l_to_r+0xc>
+  72:	00 c0       	rjmp	.+0      	; 0x74 <l_to_r+0x12>
+  74:	00 00       	nop
+  76:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+  78:	c1 f7       	brne	.-16     	; 0x6a <l_to_r+0x8>
+}
+/* Original code*/
+void l_to_r(){
+    PORTB = 1 << PIN0;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN0);
+  7a:	c0 98       	cbi	0x18, 0	; 24
+    PORTB = 1 << PIN1;
+  7c:	82 e0       	ldi	r24, 0x02	; 2
+  7e:	88 bb       	out	0x18, r24	; 24
+  80:	8a e0       	ldi	r24, 0x0A	; 10
+  82:	90 e0       	ldi	r25, 0x00	; 0
+  84:	e3 ec       	ldi	r30, 0xC3	; 195
+  86:	f9 e0       	ldi	r31, 0x09	; 9
+  88:	31 97       	sbiw	r30, 0x01	; 1
+  8a:	f1 f7       	brne	.-4      	; 0x88 <l_to_r+0x26>
+  8c:	00 c0       	rjmp	.+0      	; 0x8e <l_to_r+0x2c>
+  8e:	00 00       	nop
+  90:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+  92:	c1 f7       	brne	.-16     	; 0x84 <l_to_r+0x22>
+    PORTB = 1 << PIN0;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN0);
+    PORTB = 1 << PIN1;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN1);
+  94:	c1 98       	cbi	0x18, 1	; 24
+    PORTB = 1 << PIN2;
+  96:	84 e0       	ldi	r24, 0x04	; 4
+  98:	88 bb       	out	0x18, r24	; 24
+  9a:	8a e0       	ldi	r24, 0x0A	; 10
+  9c:	90 e0       	ldi	r25, 0x00	; 0
+  9e:	e3 ec       	ldi	r30, 0xC3	; 195
+  a0:	f9 e0       	ldi	r31, 0x09	; 9
+  a2:	31 97       	sbiw	r30, 0x01	; 1
+  a4:	f1 f7       	brne	.-4      	; 0xa2 <l_to_r+0x40>
+  a6:	00 c0       	rjmp	.+0      	; 0xa8 <l_to_r+0x46>
+  a8:	00 00       	nop
+  aa:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+  ac:	c1 f7       	brne	.-16     	; 0x9e <l_to_r+0x3c>
+    PORTB = 1 << PIN1;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN1);
+    PORTB = 1 << PIN2;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN2);
+  ae:	c2 98       	cbi	0x18, 2	; 24
+    PORTB = 1 << PIN3;
+  b0:	88 e0       	ldi	r24, 0x08	; 8
+  b2:	88 bb       	out	0x18, r24	; 24
+  b4:	8a e0       	ldi	r24, 0x0A	; 10
+  b6:	90 e0       	ldi	r25, 0x00	; 0
+  b8:	e3 ec       	ldi	r30, 0xC3	; 195
+  ba:	f9 e0       	ldi	r31, 0x09	; 9
+  bc:	31 97       	sbiw	r30, 0x01	; 1
+  be:	f1 f7       	brne	.-4      	; 0xbc <l_to_r+0x5a>
+  c0:	00 c0       	rjmp	.+0      	; 0xc2 <l_to_r+0x60>
+  c2:	00 00       	nop
+  c4:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+  c6:	c1 f7       	brne	.-16     	; 0xb8 <l_to_r+0x56>
+    PORTB = 1 << PIN2;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN2);
+    PORTB = 1 << PIN3;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN3);    
+  c8:	c3 98       	cbi	0x18, 3	; 24
+  ca:	08 95       	ret
+
+000000cc <r_to_l>:
+}
+void r_to_l(){
+    PORTB = 1 << PIN3;
+  cc:	88 e0       	ldi	r24, 0x08	; 8
+  ce:	88 bb       	out	0x18, r24	; 24
+  d0:	8a e0       	ldi	r24, 0x0A	; 10
+  d2:	90 e0       	ldi	r25, 0x00	; 0
+  d4:	e3 ec       	ldi	r30, 0xC3	; 195
+  d6:	f9 e0       	ldi	r31, 0x09	; 9
+  d8:	31 97       	sbiw	r30, 0x01	; 1
+  da:	f1 f7       	brne	.-4      	; 0xd8 <r_to_l+0xc>
+  dc:	00 c0       	rjmp	.+0      	; 0xde <r_to_l+0x12>
+  de:	00 00       	nop
+  e0:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+  e2:	c1 f7       	brne	.-16     	; 0xd4 <r_to_l+0x8>
+    PORTB &= ~(1 << PIN3);    
+}
+void r_to_l(){
+    PORTB = 1 << PIN3;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN3);
+  e4:	c3 98       	cbi	0x18, 3	; 24
+    PORTB = 1 << PIN2;
+  e6:	84 e0       	ldi	r24, 0x04	; 4
+  e8:	88 bb       	out	0x18, r24	; 24
+  ea:	8a e0       	ldi	r24, 0x0A	; 10
+  ec:	90 e0       	ldi	r25, 0x00	; 0
+  ee:	e3 ec       	ldi	r30, 0xC3	; 195
+  f0:	f9 e0       	ldi	r31, 0x09	; 9
+  f2:	31 97       	sbiw	r30, 0x01	; 1
+  f4:	f1 f7       	brne	.-4      	; 0xf2 <r_to_l+0x26>
+  f6:	00 c0       	rjmp	.+0      	; 0xf8 <r_to_l+0x2c>
+  f8:	00 00       	nop
+  fa:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+  fc:	c1 f7       	brne	.-16     	; 0xee <r_to_l+0x22>
+    PORTB = 1 << PIN3;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN3);
+    PORTB = 1 << PIN2;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN2);
+  fe:	c2 98       	cbi	0x18, 2	; 24
+    PORTB = 1 << PIN1;
+ 100:	82 e0       	ldi	r24, 0x02	; 2
+ 102:	88 bb       	out	0x18, r24	; 24
+ 104:	8a e0       	ldi	r24, 0x0A	; 10
+ 106:	90 e0       	ldi	r25, 0x00	; 0
+ 108:	e3 ec       	ldi	r30, 0xC3	; 195
+ 10a:	f9 e0       	ldi	r31, 0x09	; 9
+ 10c:	31 97       	sbiw	r30, 0x01	; 1
+ 10e:	f1 f7       	brne	.-4      	; 0x10c <r_to_l+0x40>
+ 110:	00 c0       	rjmp	.+0      	; 0x112 <r_to_l+0x46>
+ 112:	00 00       	nop
+ 114:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 116:	c1 f7       	brne	.-16     	; 0x108 <r_to_l+0x3c>
+    PORTB = 1 << PIN2;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN2);
+    PORTB = 1 << PIN1;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN1);
+ 118:	c1 98       	cbi	0x18, 1	; 24
+    PORTB = 1 << PIN0;
+ 11a:	81 e0       	ldi	r24, 0x01	; 1
+ 11c:	88 bb       	out	0x18, r24	; 24
+ 11e:	8a e0       	ldi	r24, 0x0A	; 10
+ 120:	90 e0       	ldi	r25, 0x00	; 0
+ 122:	e3 ec       	ldi	r30, 0xC3	; 195
+ 124:	f9 e0       	ldi	r31, 0x09	; 9
+ 126:	31 97       	sbiw	r30, 0x01	; 1
+ 128:	f1 f7       	brne	.-4      	; 0x126 <r_to_l+0x5a>
+ 12a:	00 c0       	rjmp	.+0      	; 0x12c <r_to_l+0x60>
+ 12c:	00 00       	nop
+ 12e:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 130:	c1 f7       	brne	.-16     	; 0x122 <r_to_l+0x56>
+    PORTB = 1 << PIN1;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN1);
+    PORTB = 1 << PIN0;
+    delay_ms(DELTA_TIME);
+    PORTB &= ~(1 << PIN0);    
+ 132:	c0 98       	cbi	0x18, 0	; 24
+ 134:	08 95       	ret
+
+00000136 <count_to_15>:
+}
+/*Binary count from 0 to 15*/
+void count_to_15(){
+ 136:	20 e0       	ldi	r18, 0x00	; 0
+    int i;
+    for(i = 0; i<16; i++){
+        PORTB = i;
+ 138:	28 bb       	out	0x18, r18	; 24
+ 13a:	8a e0       	ldi	r24, 0x0A	; 10
+ 13c:	90 e0       	ldi	r25, 0x00	; 0
+ 13e:	e3 ec       	ldi	r30, 0xC3	; 195
+ 140:	f9 e0       	ldi	r31, 0x09	; 9
+ 142:	31 97       	sbiw	r30, 0x01	; 1
+ 144:	f1 f7       	brne	.-4      	; 0x142 <count_to_15+0xc>
+ 146:	00 c0       	rjmp	.+0      	; 0x148 <count_to_15+0x12>
+ 148:	00 00       	nop
+ 14a:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 14c:	c1 f7       	brne	.-16     	; 0x13e <count_to_15+0x8>
+ 14e:	2f 5f       	subi	r18, 0xFF	; 255
+    PORTB &= ~(1 << PIN0);    
+}
+/*Binary count from 0 to 15*/
+void count_to_15(){
+    int i;
+    for(i = 0; i<16; i++){
+ 150:	20 31       	cpi	r18, 0x10	; 16
+ 152:	91 f7       	brne	.-28     	; 0x138 <count_to_15+0x2>
+        PORTB = i;
+        delay_ms(DELTA_TIME);
+    }
+}
+ 154:	08 95       	ret
+
+00000156 <ll_to_rr>:
+
+void ll_to_rr(){
+ 156:	24 e0       	ldi	r18, 0x04	; 4
+ 158:	30 e0       	ldi	r19, 0x00	; 0
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 5;
+ 15a:	55 e0       	ldi	r21, 0x05	; 5
+        delay_ms(DELTA_TIME);
+        PORTB = 10;
+ 15c:	4a e0       	ldi	r20, 0x0A	; 10
+}
+
+void ll_to_rr(){
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 5;
+ 15e:	58 bb       	out	0x18, r21	; 24
+ 160:	8a e0       	ldi	r24, 0x0A	; 10
+ 162:	90 e0       	ldi	r25, 0x00	; 0
+ 164:	e3 ec       	ldi	r30, 0xC3	; 195
+ 166:	f9 e0       	ldi	r31, 0x09	; 9
+ 168:	31 97       	sbiw	r30, 0x01	; 1
+ 16a:	f1 f7       	brne	.-4      	; 0x168 <ll_to_rr+0x12>
+ 16c:	00 c0       	rjmp	.+0      	; 0x16e <ll_to_rr+0x18>
+ 16e:	00 00       	nop
+ 170:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 172:	c1 f7       	brne	.-16     	; 0x164 <ll_to_rr+0xe>
+void ll_to_rr(){
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 5;
+        delay_ms(DELTA_TIME);
+        PORTB = 10;
+ 174:	48 bb       	out	0x18, r20	; 24
+ 176:	8a e0       	ldi	r24, 0x0A	; 10
+ 178:	90 e0       	ldi	r25, 0x00	; 0
+ 17a:	e3 ec       	ldi	r30, 0xC3	; 195
+ 17c:	f9 e0       	ldi	r31, 0x09	; 9
+ 17e:	31 97       	sbiw	r30, 0x01	; 1
+ 180:	f1 f7       	brne	.-4      	; 0x17e <ll_to_rr+0x28>
+ 182:	00 c0       	rjmp	.+0      	; 0x184 <ll_to_rr+0x2e>
+ 184:	00 00       	nop
+ 186:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 188:	c1 f7       	brne	.-16     	; 0x17a <ll_to_rr+0x24>
+ 18a:	21 50       	subi	r18, 0x01	; 1
+ 18c:	31 09       	sbc	r19, r1
+    }
+}
+
+void ll_to_rr(){
+    int i;
+    for (i= 0; i<4; i++){
+ 18e:	39 f7       	brne	.-50     	; 0x15e <ll_to_rr+0x8>
+        PORTB = 5;
+        delay_ms(DELTA_TIME);
+        PORTB = 10;
+        delay_ms(DELTA_TIME);    
+    }
+}
+ 190:	08 95       	ret
+
+00000192 <rr_to_ll>:
+
+void rr_to_ll(){
+ 192:	24 e0       	ldi	r18, 0x04	; 4
+ 194:	30 e0       	ldi	r19, 0x00	; 0
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 10;
+ 196:	5a e0       	ldi	r21, 0x0A	; 10
+        delay_ms(DELTA_TIME);
+        PORTB = 5;
+ 198:	45 e0       	ldi	r20, 0x05	; 5
+}
+
+void rr_to_ll(){
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 10;
+ 19a:	58 bb       	out	0x18, r21	; 24
+ 19c:	8a e0       	ldi	r24, 0x0A	; 10
+ 19e:	90 e0       	ldi	r25, 0x00	; 0
+ 1a0:	e3 ec       	ldi	r30, 0xC3	; 195
+ 1a2:	f9 e0       	ldi	r31, 0x09	; 9
+ 1a4:	31 97       	sbiw	r30, 0x01	; 1
+ 1a6:	f1 f7       	brne	.-4      	; 0x1a4 <rr_to_ll+0x12>
+ 1a8:	00 c0       	rjmp	.+0      	; 0x1aa <rr_to_ll+0x18>
+ 1aa:	00 00       	nop
+ 1ac:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 1ae:	c1 f7       	brne	.-16     	; 0x1a0 <rr_to_ll+0xe>
+void rr_to_ll(){
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 10;
+        delay_ms(DELTA_TIME);
+        PORTB = 5;
+ 1b0:	48 bb       	out	0x18, r20	; 24
+ 1b2:	8a e0       	ldi	r24, 0x0A	; 10
+ 1b4:	90 e0       	ldi	r25, 0x00	; 0
+ 1b6:	e3 ec       	ldi	r30, 0xC3	; 195
+ 1b8:	f9 e0       	ldi	r31, 0x09	; 9
+ 1ba:	31 97       	sbiw	r30, 0x01	; 1
+ 1bc:	f1 f7       	brne	.-4      	; 0x1ba <rr_to_ll+0x28>
+ 1be:	00 c0       	rjmp	.+0      	; 0x1c0 <rr_to_ll+0x2e>
+ 1c0:	00 00       	nop
+ 1c2:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 1c4:	c1 f7       	brne	.-16     	; 0x1b6 <rr_to_ll+0x24>
+ 1c6:	21 50       	subi	r18, 0x01	; 1
+ 1c8:	31 09       	sbc	r19, r1
+    }
+}
+
+void rr_to_ll(){
+    int i;
+    for (i= 0; i<4; i++){
+ 1ca:	39 f7       	brne	.-50     	; 0x19a <rr_to_ll+0x8>
+        PORTB = 10;
+        delay_ms(DELTA_TIME);
+        PORTB = 5;
+        delay_ms(DELTA_TIME);    
+    }
+}
+ 1cc:	08 95       	ret
+
+000001ce <lll_to_rrr>:
+
+void lll_to_rrr(){
+ 1ce:	24 e0       	ldi	r18, 0x04	; 4
+ 1d0:	30 e0       	ldi	r19, 0x00	; 0
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 1;
+ 1d2:	f1 e0       	ldi	r31, 0x01	; 1
+        delay_ms(DELTA_TIME);
+        PORTB = 3;
+ 1d4:	e3 e0       	ldi	r30, 0x03	; 3
+        delay_ms(DELTA_TIME);
+        PORTB = 7;
+ 1d6:	77 e0       	ldi	r23, 0x07	; 7
+        delay_ms(DELTA_TIME);
+        PORTB = 14;
+ 1d8:	6e e0       	ldi	r22, 0x0E	; 14
+        delay_ms(DELTA_TIME);
+        PORTB = 12;
+ 1da:	5c e0       	ldi	r21, 0x0C	; 12
+        delay_ms(DELTA_TIME);
+        PORTB = 8;
+ 1dc:	48 e0       	ldi	r20, 0x08	; 8
+}
+
+void lll_to_rrr(){
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 1;
+ 1de:	f8 bb       	out	0x18, r31	; 24
+ 1e0:	8a e0       	ldi	r24, 0x0A	; 10
+ 1e2:	90 e0       	ldi	r25, 0x00	; 0
+ 1e4:	a3 ec       	ldi	r26, 0xC3	; 195
+ 1e6:	b9 e0       	ldi	r27, 0x09	; 9
+ 1e8:	11 97       	sbiw	r26, 0x01	; 1
+ 1ea:	f1 f7       	brne	.-4      	; 0x1e8 <lll_to_rrr+0x1a>
+ 1ec:	00 c0       	rjmp	.+0      	; 0x1ee <lll_to_rrr+0x20>
+ 1ee:	00 00       	nop
+ 1f0:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 1f2:	c1 f7       	brne	.-16     	; 0x1e4 <lll_to_rrr+0x16>
+void lll_to_rrr(){
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 1;
+        delay_ms(DELTA_TIME);
+        PORTB = 3;
+ 1f4:	e8 bb       	out	0x18, r30	; 24
+ 1f6:	8a e0       	ldi	r24, 0x0A	; 10
+ 1f8:	90 e0       	ldi	r25, 0x00	; 0
+ 1fa:	a3 ec       	ldi	r26, 0xC3	; 195
+ 1fc:	b9 e0       	ldi	r27, 0x09	; 9
+ 1fe:	11 97       	sbiw	r26, 0x01	; 1
+ 200:	f1 f7       	brne	.-4      	; 0x1fe <lll_to_rrr+0x30>
+ 202:	00 c0       	rjmp	.+0      	; 0x204 <lll_to_rrr+0x36>
+ 204:	00 00       	nop
+ 206:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 208:	c1 f7       	brne	.-16     	; 0x1fa <lll_to_rrr+0x2c>
+    for (i= 0; i<4; i++){
+        PORTB = 1;
+        delay_ms(DELTA_TIME);
+        PORTB = 3;
+        delay_ms(DELTA_TIME);
+        PORTB = 7;
+ 20a:	78 bb       	out	0x18, r23	; 24
+ 20c:	8a e0       	ldi	r24, 0x0A	; 10
+ 20e:	90 e0       	ldi	r25, 0x00	; 0
+ 210:	a3 ec       	ldi	r26, 0xC3	; 195
+ 212:	b9 e0       	ldi	r27, 0x09	; 9
+ 214:	11 97       	sbiw	r26, 0x01	; 1
+ 216:	f1 f7       	brne	.-4      	; 0x214 <lll_to_rrr+0x46>
+ 218:	00 c0       	rjmp	.+0      	; 0x21a <lll_to_rrr+0x4c>
+ 21a:	00 00       	nop
+ 21c:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 21e:	c1 f7       	brne	.-16     	; 0x210 <lll_to_rrr+0x42>
+        delay_ms(DELTA_TIME);
+        PORTB = 3;
+        delay_ms(DELTA_TIME);
+        PORTB = 7;
+        delay_ms(DELTA_TIME);
+        PORTB = 14;
+ 220:	68 bb       	out	0x18, r22	; 24
+ 222:	8a e0       	ldi	r24, 0x0A	; 10
+ 224:	90 e0       	ldi	r25, 0x00	; 0
+ 226:	a3 ec       	ldi	r26, 0xC3	; 195
+ 228:	b9 e0       	ldi	r27, 0x09	; 9
+ 22a:	11 97       	sbiw	r26, 0x01	; 1
+ 22c:	f1 f7       	brne	.-4      	; 0x22a <lll_to_rrr+0x5c>
+ 22e:	00 c0       	rjmp	.+0      	; 0x230 <lll_to_rrr+0x62>
+ 230:	00 00       	nop
+ 232:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 234:	c1 f7       	brne	.-16     	; 0x226 <lll_to_rrr+0x58>
+        delay_ms(DELTA_TIME);
+        PORTB = 7;
+        delay_ms(DELTA_TIME);
+        PORTB = 14;
+        delay_ms(DELTA_TIME);
+        PORTB = 12;
+ 236:	58 bb       	out	0x18, r21	; 24
+ 238:	8a e0       	ldi	r24, 0x0A	; 10
+ 23a:	90 e0       	ldi	r25, 0x00	; 0
+ 23c:	a3 ec       	ldi	r26, 0xC3	; 195
+ 23e:	b9 e0       	ldi	r27, 0x09	; 9
+ 240:	11 97       	sbiw	r26, 0x01	; 1
+ 242:	f1 f7       	brne	.-4      	; 0x240 <lll_to_rrr+0x72>
+ 244:	00 c0       	rjmp	.+0      	; 0x246 <lll_to_rrr+0x78>
+ 246:	00 00       	nop
+ 248:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 24a:	c1 f7       	brne	.-16     	; 0x23c <lll_to_rrr+0x6e>
+        delay_ms(DELTA_TIME);
+        PORTB = 14;
+        delay_ms(DELTA_TIME);
+        PORTB = 12;
+        delay_ms(DELTA_TIME);
+        PORTB = 8;
+ 24c:	48 bb       	out	0x18, r20	; 24
+ 24e:	8a e0       	ldi	r24, 0x0A	; 10
+ 250:	90 e0       	ldi	r25, 0x00	; 0
+ 252:	a3 ec       	ldi	r26, 0xC3	; 195
+ 254:	b9 e0       	ldi	r27, 0x09	; 9
+ 256:	11 97       	sbiw	r26, 0x01	; 1
+ 258:	f1 f7       	brne	.-4      	; 0x256 <lll_to_rrr+0x88>
+ 25a:	00 c0       	rjmp	.+0      	; 0x25c <lll_to_rrr+0x8e>
+ 25c:	00 00       	nop
+ 25e:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 260:	c1 f7       	brne	.-16     	; 0x252 <lll_to_rrr+0x84>
+ 262:	21 50       	subi	r18, 0x01	; 1
+ 264:	31 09       	sbc	r19, r1
+    }
+}
+
+void lll_to_rrr(){
+    int i;
+    for (i= 0; i<4; i++){
+ 266:	09 f0       	breq	.+2      	; 0x26a <lll_to_rrr+0x9c>
+ 268:	ba cf       	rjmp	.-140    	; 0x1de <lll_to_rrr+0x10>
+        PORTB = 12;
+        delay_ms(DELTA_TIME);
+        PORTB = 8;
+        delay_ms(DELTA_TIME);
+    }
+}
+ 26a:	08 95       	ret
+
+0000026c <rrr_to_lll>:
+
+void rrr_to_lll(){
+ 26c:	24 e0       	ldi	r18, 0x04	; 4
+ 26e:	30 e0       	ldi	r19, 0x00	; 0
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 8;
+ 270:	f8 e0       	ldi	r31, 0x08	; 8
+        delay_ms(DELTA_TIME);
+        PORTB = 12;
+ 272:	ec e0       	ldi	r30, 0x0C	; 12
+        delay_ms(DELTA_TIME);
+        PORTB = 14;
+ 274:	7e e0       	ldi	r23, 0x0E	; 14
+        delay_ms(DELTA_TIME);
+        PORTB = 7;
+ 276:	67 e0       	ldi	r22, 0x07	; 7
+        delay_ms(DELTA_TIME);
+        PORTB = 3;
+ 278:	53 e0       	ldi	r21, 0x03	; 3
+        delay_ms(DELTA_TIME);
+        PORTB = 1;
+ 27a:	41 e0       	ldi	r20, 0x01	; 1
+}
+
+void rrr_to_lll(){
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 8;
+ 27c:	f8 bb       	out	0x18, r31	; 24
+ 27e:	8a e0       	ldi	r24, 0x0A	; 10
+ 280:	90 e0       	ldi	r25, 0x00	; 0
+ 282:	a3 ec       	ldi	r26, 0xC3	; 195
+ 284:	b9 e0       	ldi	r27, 0x09	; 9
+ 286:	11 97       	sbiw	r26, 0x01	; 1
+ 288:	f1 f7       	brne	.-4      	; 0x286 <rrr_to_lll+0x1a>
+ 28a:	00 c0       	rjmp	.+0      	; 0x28c <rrr_to_lll+0x20>
+ 28c:	00 00       	nop
+ 28e:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 290:	c1 f7       	brne	.-16     	; 0x282 <rrr_to_lll+0x16>
+void rrr_to_lll(){
+    int i;
+    for (i= 0; i<4; i++){
+        PORTB = 8;
+        delay_ms(DELTA_TIME);
+        PORTB = 12;
+ 292:	e8 bb       	out	0x18, r30	; 24
+ 294:	8a e0       	ldi	r24, 0x0A	; 10
+ 296:	90 e0       	ldi	r25, 0x00	; 0
+ 298:	a3 ec       	ldi	r26, 0xC3	; 195
+ 29a:	b9 e0       	ldi	r27, 0x09	; 9
+ 29c:	11 97       	sbiw	r26, 0x01	; 1
+ 29e:	f1 f7       	brne	.-4      	; 0x29c <rrr_to_lll+0x30>
+ 2a0:	00 c0       	rjmp	.+0      	; 0x2a2 <rrr_to_lll+0x36>
+ 2a2:	00 00       	nop
+ 2a4:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 2a6:	c1 f7       	brne	.-16     	; 0x298 <rrr_to_lll+0x2c>
+    for (i= 0; i<4; i++){
+        PORTB = 8;
+        delay_ms(DELTA_TIME);
+        PORTB = 12;
+        delay_ms(DELTA_TIME);
+        PORTB = 14;
+ 2a8:	78 bb       	out	0x18, r23	; 24
+ 2aa:	8a e0       	ldi	r24, 0x0A	; 10
+ 2ac:	90 e0       	ldi	r25, 0x00	; 0
+ 2ae:	a3 ec       	ldi	r26, 0xC3	; 195
+ 2b0:	b9 e0       	ldi	r27, 0x09	; 9
+ 2b2:	11 97       	sbiw	r26, 0x01	; 1
+ 2b4:	f1 f7       	brne	.-4      	; 0x2b2 <rrr_to_lll+0x46>
+ 2b6:	00 c0       	rjmp	.+0      	; 0x2b8 <rrr_to_lll+0x4c>
+ 2b8:	00 00       	nop
+ 2ba:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 2bc:	c1 f7       	brne	.-16     	; 0x2ae <rrr_to_lll+0x42>
+        delay_ms(DELTA_TIME);
+        PORTB = 12;
+        delay_ms(DELTA_TIME);
+        PORTB = 14;
+        delay_ms(DELTA_TIME);
+        PORTB = 7;
+ 2be:	68 bb       	out	0x18, r22	; 24
+ 2c0:	8a e0       	ldi	r24, 0x0A	; 10
+ 2c2:	90 e0       	ldi	r25, 0x00	; 0
+ 2c4:	a3 ec       	ldi	r26, 0xC3	; 195
+ 2c6:	b9 e0       	ldi	r27, 0x09	; 9
+ 2c8:	11 97       	sbiw	r26, 0x01	; 1
+ 2ca:	f1 f7       	brne	.-4      	; 0x2c8 <rrr_to_lll+0x5c>
+ 2cc:	00 c0       	rjmp	.+0      	; 0x2ce <rrr_to_lll+0x62>
+ 2ce:	00 00       	nop
+ 2d0:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 2d2:	c1 f7       	brne	.-16     	; 0x2c4 <rrr_to_lll+0x58>
+        delay_ms(DELTA_TIME);
+        PORTB = 14;
+        delay_ms(DELTA_TIME);
+        PORTB = 7;
+        delay_ms(DELTA_TIME);
+        PORTB = 3;
+ 2d4:	58 bb       	out	0x18, r21	; 24
+ 2d6:	8a e0       	ldi	r24, 0x0A	; 10
+ 2d8:	90 e0       	ldi	r25, 0x00	; 0
+ 2da:	a3 ec       	ldi	r26, 0xC3	; 195
+ 2dc:	b9 e0       	ldi	r27, 0x09	; 9
+ 2de:	11 97       	sbiw	r26, 0x01	; 1
+ 2e0:	f1 f7       	brne	.-4      	; 0x2de <rrr_to_lll+0x72>
+ 2e2:	00 c0       	rjmp	.+0      	; 0x2e4 <rrr_to_lll+0x78>
+ 2e4:	00 00       	nop
+ 2e6:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 2e8:	c1 f7       	brne	.-16     	; 0x2da <rrr_to_lll+0x6e>
+        delay_ms(DELTA_TIME);
+        PORTB = 7;
+        delay_ms(DELTA_TIME);
+        PORTB = 3;
+        delay_ms(DELTA_TIME);
+        PORTB = 1;
+ 2ea:	48 bb       	out	0x18, r20	; 24
+ 2ec:	8a e0       	ldi	r24, 0x0A	; 10
+ 2ee:	90 e0       	ldi	r25, 0x00	; 0
+ 2f0:	a3 ec       	ldi	r26, 0xC3	; 195
+ 2f2:	b9 e0       	ldi	r27, 0x09	; 9
+ 2f4:	11 97       	sbiw	r26, 0x01	; 1
+ 2f6:	f1 f7       	brne	.-4      	; 0x2f4 <rrr_to_lll+0x88>
+ 2f8:	00 c0       	rjmp	.+0      	; 0x2fa <rrr_to_lll+0x8e>
+ 2fa:	00 00       	nop
+ 2fc:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 2fe:	c1 f7       	brne	.-16     	; 0x2f0 <rrr_to_lll+0x84>
+ 300:	21 50       	subi	r18, 0x01	; 1
+ 302:	31 09       	sbc	r19, r1
+    }
+}
+
+void rrr_to_lll(){
+    int i;
+    for (i= 0; i<4; i++){
+ 304:	09 f0       	breq	.+2      	; 0x308 <rrr_to_lll+0x9c>
+ 306:	ba cf       	rjmp	.-140    	; 0x27c <rrr_to_lll+0x10>
+        PORTB = 3;
+        delay_ms(DELTA_TIME);
+        PORTB = 1;
+        delay_ms(DELTA_TIME);
+    }
+}
+ 308:	08 95       	ret
+
+0000030a <out_to_in>:
+
+void out_to_in(){
+ 30a:	24 e0       	ldi	r18, 0x04	; 4
+ 30c:	30 e0       	ldi	r19, 0x00	; 0
+        int i;
+    for (i= 0; i<4; i++){
+        PORTB = 9;
+ 30e:	59 e0       	ldi	r21, 0x09	; 9
+        delay_ms(DELTA_TIME * 2);
+        PORTB = 6;
+ 310:	46 e0       	ldi	r20, 0x06	; 6
+}
+
+void out_to_in(){
+        int i;
+    for (i= 0; i<4; i++){
+        PORTB = 9;
+ 312:	58 bb       	out	0x18, r21	; 24
+ 314:	84 e1       	ldi	r24, 0x14	; 20
+ 316:	90 e0       	ldi	r25, 0x00	; 0
+ 318:	e3 ec       	ldi	r30, 0xC3	; 195
+ 31a:	f9 e0       	ldi	r31, 0x09	; 9
+ 31c:	31 97       	sbiw	r30, 0x01	; 1
+ 31e:	f1 f7       	brne	.-4      	; 0x31c <out_to_in+0x12>
+ 320:	00 c0       	rjmp	.+0      	; 0x322 <out_to_in+0x18>
+ 322:	00 00       	nop
+ 324:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 326:	c1 f7       	brne	.-16     	; 0x318 <out_to_in+0xe>
+void out_to_in(){
+        int i;
+    for (i= 0; i<4; i++){
+        PORTB = 9;
+        delay_ms(DELTA_TIME * 2);
+        PORTB = 6;
+ 328:	48 bb       	out	0x18, r20	; 24
+ 32a:	84 e1       	ldi	r24, 0x14	; 20
+ 32c:	90 e0       	ldi	r25, 0x00	; 0
+ 32e:	e3 ec       	ldi	r30, 0xC3	; 195
+ 330:	f9 e0       	ldi	r31, 0x09	; 9
+ 332:	31 97       	sbiw	r30, 0x01	; 1
+ 334:	f1 f7       	brne	.-4      	; 0x332 <out_to_in+0x28>
+ 336:	00 c0       	rjmp	.+0      	; 0x338 <out_to_in+0x2e>
+ 338:	00 00       	nop
+ 33a:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 33c:	c1 f7       	brne	.-16     	; 0x32e <out_to_in+0x24>
+ 33e:	21 50       	subi	r18, 0x01	; 1
+ 340:	31 09       	sbc	r19, r1
+    }
+}
+
+void out_to_in(){
+        int i;
+    for (i= 0; i<4; i++){
+ 342:	39 f7       	brne	.-50     	; 0x312 <out_to_in+0x8>
+        PORTB = 9;
+        delay_ms(DELTA_TIME * 2);
+        PORTB = 6;
+        delay_ms(DELTA_TIME * 2);    
+    }
+}
+ 344:	08 95       	ret
+
+00000346 <in_to_out>:
+
+void in_to_out(){
+ 346:	24 e0       	ldi	r18, 0x04	; 4
+ 348:	30 e0       	ldi	r19, 0x00	; 0
+        int i;
+    for (i= 0; i<4; i++){
+        PORTB = 6;
+ 34a:	56 e0       	ldi	r21, 0x06	; 6
+        delay_ms(DELTA_TIME * 2);
+        PORTB = 9;
+ 34c:	49 e0       	ldi	r20, 0x09	; 9
+}
+
+void in_to_out(){
+        int i;
+    for (i= 0; i<4; i++){
+        PORTB = 6;
+ 34e:	58 bb       	out	0x18, r21	; 24
+ 350:	84 e1       	ldi	r24, 0x14	; 20
+ 352:	90 e0       	ldi	r25, 0x00	; 0
+ 354:	e3 ec       	ldi	r30, 0xC3	; 195
+ 356:	f9 e0       	ldi	r31, 0x09	; 9
+ 358:	31 97       	sbiw	r30, 0x01	; 1
+ 35a:	f1 f7       	brne	.-4      	; 0x358 <in_to_out+0x12>
+ 35c:	00 c0       	rjmp	.+0      	; 0x35e <in_to_out+0x18>
+ 35e:	00 00       	nop
+ 360:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 362:	c1 f7       	brne	.-16     	; 0x354 <in_to_out+0xe>
+void in_to_out(){
+        int i;
+    for (i= 0; i<4; i++){
+        PORTB = 6;
+        delay_ms(DELTA_TIME * 2);
+        PORTB = 9;
+ 364:	48 bb       	out	0x18, r20	; 24
+ 366:	84 e1       	ldi	r24, 0x14	; 20
+ 368:	90 e0       	ldi	r25, 0x00	; 0
+ 36a:	e3 ec       	ldi	r30, 0xC3	; 195
+ 36c:	f9 e0       	ldi	r31, 0x09	; 9
+ 36e:	31 97       	sbiw	r30, 0x01	; 1
+ 370:	f1 f7       	brne	.-4      	; 0x36e <in_to_out+0x28>
+ 372:	00 c0       	rjmp	.+0      	; 0x374 <in_to_out+0x2e>
+ 374:	00 00       	nop
+ 376:	01 97       	sbiw	r24, 0x01	; 1
+
+/*
+ * Delay in ms
+ */
+void delay_ms(unsigned short ms){
+    for(ms /= 10; ms > 0; ms--)
+ 378:	c1 f7       	brne	.-16     	; 0x36a <in_to_out+0x24>
+ 37a:	21 50       	subi	r18, 0x01	; 1
+ 37c:	31 09       	sbc	r19, r1
+    }
+}
+
+void in_to_out(){
+        int i;
+    for (i= 0; i<4; i++){
+ 37e:	39 f7       	brne	.-50     	; 0x34e <in_to_out+0x8>
+        PORTB = 6;
+        delay_ms(DELTA_TIME * 2);
+        PORTB = 9;
+        delay_ms(DELTA_TIME * 2);    
+    }
+}
+ 380:	08 95       	ret
+
+00000382 <main>:
+    
+int main(){
+        DDRB = 1 << PIN0 | 1 << PIN1 | 1 << PIN2 | 1 << PIN3;   // 1:out 0:in
+ 382:	8f e0       	ldi	r24, 0x0F	; 15
+ 384:	87 bb       	out	0x17, r24	; 23
+        while(1){
+            r_to_l();
+ 386:	a2 de       	rcall	.-700    	; 0xcc <r_to_l>
+            rr_to_ll();            
+ 388:	04 df       	rcall	.-504    	; 0x192 <rr_to_ll>
+            l_to_r();
+ 38a:	6b de       	rcall	.-810    	; 0x62 <l_to_r>
+            ll_to_rr();
+ 38c:	e4 de       	rcall	.-568    	; 0x156 <ll_to_rr>
+            r_to_l();
+ 38e:	9e de       	rcall	.-708    	; 0xcc <r_to_l>
+            r_to_l();
+ 390:	9d de       	rcall	.-710    	; 0xcc <r_to_l>
+            out_to_in();
+ 392:	bb df       	rcall	.-138    	; 0x30a <out_to_in>
+            l_to_r();
+ 394:	66 de       	rcall	.-820    	; 0x62 <l_to_r>
+            l_to_r();
+ 396:	65 de       	rcall	.-822    	; 0x62 <l_to_r>
+            in_to_out();
+ 398:	d6 df       	rcall	.-84     	; 0x346 <in_to_out>
+            l_to_r();
+ 39a:	63 de       	rcall	.-826    	; 0x62 <l_to_r>
+            l_to_r();
+ 39c:	62 de       	rcall	.-828    	; 0x62 <l_to_r>
+            lll_to_rrr();
+ 39e:	17 df       	rcall	.-466    	; 0x1ce <lll_to_rrr>
+            r_to_l();
+ 3a0:	95 de       	rcall	.-726    	; 0xcc <r_to_l>
+            r_to_l();
+ 3a2:	94 de       	rcall	.-728    	; 0xcc <r_to_l>
+            rrr_to_lll();
+ 3a4:	63 df       	rcall	.-314    	; 0x26c <rrr_to_lll>
+        }
+ 3a6:	ef cf       	rjmp	.-34     	; 0x386 <main+0x4>
+
+000003a8 <__umulhisi3>:
+ 3a8:	a2 9f       	mul	r26, r18
+ 3aa:	b0 01       	movw	r22, r0
+ 3ac:	b3 9f       	mul	r27, r19
+ 3ae:	c0 01       	movw	r24, r0
+ 3b0:	a3 9f       	mul	r26, r19
+ 3b2:	01 d0       	rcall	.+2      	; 0x3b6 <__umulhisi3+0xe>
+ 3b4:	b2 9f       	mul	r27, r18
+ 3b6:	70 0d       	add	r23, r0
+ 3b8:	81 1d       	adc	r24, r1
+ 3ba:	11 24       	eor	r1, r1
+ 3bc:	91 1d       	adc	r25, r1
+ 3be:	08 95       	ret
+
+000003c0 <_exit>:
+ 3c0:	f8 94       	cli
+
+000003c2 <__stop_program>:
+ 3c2:	ff cf       	rjmp	.-2      	; 0x3c2 <__stop_program>

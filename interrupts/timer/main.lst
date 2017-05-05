@@ -1,0 +1,206 @@
+
+main.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000d6  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  000000d6  0000016a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000001  00800060  00800060  0000016a  2**0
+                  ALLOC
+  3 .stab         000006b4  00000000  00000000  0000016c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  4 .stabstr      00000c5a  00000000  00000000  00000820  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .comment      00000011  00000000  00000000  0000147a  2**0
+                  CONTENTS, READONLY
+  6 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000148c  2**2
+                  CONTENTS, READONLY
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
+   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	1b c0       	rjmp	.+54     	; 0x48 <__vector_8>
+  12:	19 c0       	rjmp	.+50     	; 0x46 <__bad_interrupt>
+  14:	18 c0       	rjmp	.+48     	; 0x46 <__bad_interrupt>
+  16:	17 c0       	rjmp	.+46     	; 0x46 <__bad_interrupt>
+  18:	16 c0       	rjmp	.+44     	; 0x46 <__bad_interrupt>
+  1a:	15 c0       	rjmp	.+42     	; 0x46 <__bad_interrupt>
+  1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
+  1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
+  20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
+  22:	11 c0       	rjmp	.+34     	; 0x46 <__bad_interrupt>
+  24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_clear_bss>:
+  32:	20 e0       	ldi	r18, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	a1 36       	cpi	r26, 0x61	; 97
+  3e:	b2 07       	cpc	r27, r18
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	2e d0       	rcall	.+92     	; 0xa0 <main>
+  44:	46 c0       	rjmp	.+140    	; 0xd2 <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <__vector_8>:
+
+/*Global count variable*/
+BYTE count = 0;
+
+/*Interrupt handling from keyboard 0*/
+ISR(TIMER1_OVF_vect){
+  48:	1f 92       	push	r1
+  4a:	0f 92       	push	r0
+  4c:	0f b6       	in	r0, 0x3f	; 63
+  4e:	0f 92       	push	r0
+  50:	11 24       	eor	r1, r1
+  52:	8f 93       	push	r24
+  54:	9f 93       	push	r25
+    count++;
+  56:	80 91 60 00 	lds	r24, 0x0060
+  5a:	8f 5f       	subi	r24, 0xFF	; 255
+  5c:	80 93 60 00 	sts	0x0060, r24
+    PORTB ^= 1;
+  60:	98 b3       	in	r25, 0x18	; 24
+  62:	81 e0       	ldi	r24, 0x01	; 1
+  64:	89 27       	eor	r24, r25
+  66:	88 bb       	out	0x18, r24	; 24
+    TCNT1 = counter;
+  68:	87 ef       	ldi	r24, 0xF7	; 247
+  6a:	92 ec       	ldi	r25, 0xC2	; 194
+  6c:	9d bd       	out	0x2d, r25	; 45
+  6e:	8c bd       	out	0x2c, r24	; 44
+}
+  70:	9f 91       	pop	r25
+  72:	8f 91       	pop	r24
+  74:	0f 90       	pop	r0
+  76:	0f be       	out	0x3f, r0	; 63
+  78:	0f 90       	pop	r0
+  7a:	1f 90       	pop	r1
+  7c:	18 95       	reti
+
+0000007e <init>:
+
+void init(){
+    /*Set output pins*/
+    DDRB = 1 << PIN0 | 1 << PIN1 | 1 << PIN2 | 1 << PIN3;   // 1:out 0:in
+  7e:	8f e0       	ldi	r24, 0x0F	; 15
+  80:	87 bb       	out	0x17, r24	; 23
+    //Set the counter value
+    TCNT1 = counter;
+  82:	87 ef       	ldi	r24, 0xF7	; 247
+  84:	92 ec       	ldi	r25, 0xC2	; 194
+  86:	9d bd       	out	0x2d, r25	; 45
+  88:	8c bd       	out	0x2c, r24	; 44
+    //Set the register, B is responsible for activating the counter.
+    TCCR1A = 0;
+  8a:	1f bc       	out	0x2f, r1	; 47
+    TCCR1B = (1<<CS11) | (1<<CS10);
+  8c:	83 e0       	ldi	r24, 0x03	; 3
+  8e:	8e bd       	out	0x2e, r24	; 46
+    //Enable timer interrupts on Timer1 overflow.
+    TIMSK = (1 << TOIE1);
+  90:	84 e0       	ldi	r24, 0x04	; 4
+  92:	89 bf       	out	0x39, r24	; 57
+
+    /*
+     * Allow Global Interrupts
+     */
+    sei();
+  94:	78 94       	sei
+    set_sleep_mode(SLEEP_MODE_IDLE);
+  96:	85 b7       	in	r24, 0x35	; 53
+  98:	8f 78       	andi	r24, 0x8F	; 143
+  9a:	85 bf       	out	0x35, r24	; 53
+    cli();
+  9c:	f8 94       	cli
+  9e:	08 95       	ret
+
+000000a0 <main>:
+    TCNT1 = counter;
+}
+
+void init(){
+    /*Set output pins*/
+    DDRB = 1 << PIN0 | 1 << PIN1 | 1 << PIN2 | 1 << PIN3;   // 1:out 0:in
+  a0:	8f e0       	ldi	r24, 0x0F	; 15
+  a2:	87 bb       	out	0x17, r24	; 23
+    //Set the counter value
+    TCNT1 = counter;
+  a4:	87 ef       	ldi	r24, 0xF7	; 247
+  a6:	92 ec       	ldi	r25, 0xC2	; 194
+  a8:	9d bd       	out	0x2d, r25	; 45
+  aa:	8c bd       	out	0x2c, r24	; 44
+    //Set the register, B is responsible for activating the counter.
+    TCCR1A = 0;
+  ac:	1f bc       	out	0x2f, r1	; 47
+    TCCR1B = (1<<CS11) | (1<<CS10);
+  ae:	83 e0       	ldi	r24, 0x03	; 3
+  b0:	8e bd       	out	0x2e, r24	; 46
+    //Enable timer interrupts on Timer1 overflow.
+    TIMSK = (1 << TOIE1);
+  b2:	84 e0       	ldi	r24, 0x04	; 4
+  b4:	89 bf       	out	0x39, r24	; 57
+
+    /*
+     * Allow Global Interrupts
+     */
+    sei();
+  b6:	78 94       	sei
+    set_sleep_mode(SLEEP_MODE_IDLE);
+  b8:	85 b7       	in	r24, 0x35	; 53
+  ba:	8f 78       	andi	r24, 0x8F	; 143
+  bc:	85 bf       	out	0x35, r24	; 53
+    cli();
+  be:	f8 94       	cli
+
+int main(){
+    
+    init();
+    while(1){
+        sleep_enable();
+  c0:	85 b7       	in	r24, 0x35	; 53
+  c2:	80 68       	ori	r24, 0x80	; 128
+  c4:	85 bf       	out	0x35, r24	; 53
+        sei();
+  c6:	78 94       	sei
+        sleep_cpu();
+  c8:	88 95       	sleep
+        sleep_disable();
+  ca:	85 b7       	in	r24, 0x35	; 53
+  cc:	8f 77       	andi	r24, 0x7F	; 127
+  ce:	85 bf       	out	0x35, r24	; 53
+    }
+  d0:	f7 cf       	rjmp	.-18     	; 0xc0 <main+0x20>
+
+000000d2 <_exit>:
+  d2:	f8 94       	cli
+
+000000d4 <__stop_program>:
+  d4:	ff cf       	rjmp	.-2      	; 0xd4 <__stop_program>
