@@ -15,17 +15,46 @@ The code runs on ATMEGA-16PU, that controls three IO-Extenders PCF8574.
 There are 23 LEDs in total that are shaped as an endless loop. 
  */
 
+//The MC runs on 11.0592 Mhz and we are using a 16-bit timer.
+#define counter         0x10000-43200
+#define HOUR_FORMAT     24
+
+unsigned int counter_seconds;
+unsigned int counter_minutes;
+unsigned int counter_hours;
+unsigned int switches[3] = {0x70, 0x72, 0x7E};
 
 
+void turn_on_led(unsigned int hour){
+    
+}
 
+void shut_off_switch(){
+    
+}
 
+void update_leds(unsigned int hour){
+    
+}
 
-#define counter         0x10000-15625
-
+void update_clock(){
+    counter_seconds++;
+    if(counter_seconds == 60){
+        counter_seconds = 0;
+        counter_minutes++;
+        if(counter_minutes == 60){
+            counter_minutes = 0;
+            counter_hours++;
+            counter_hours = counter_hours % HOUR_FORMAT;
+            update_leds(counter_hours);
+        }
+    }
+}
 
 /*Interrupt handling from keyboard 0*/
 ISR(TIMER1_OVF_vect){
-    
+	update_clock();
+	TCNT1 = counter;    
 }
 
 void init(){
@@ -41,9 +70,7 @@ void init(){
     //Enable timer interrupts on Timer1 overflow.
     TIMSK = (1 << TOIE1);
 
-    /*
-     * Allow Global Interrupts
-     */
+    //Allow Global Interrupts
     sei();
     set_sleep_mode(SLEEP_MODE_IDLE);
     cli();
